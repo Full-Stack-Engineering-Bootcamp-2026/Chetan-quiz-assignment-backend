@@ -2,11 +2,13 @@ package com.quizapp.quiz_versioning_system.common.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.quizapp.quiz_versioning_system.common.dao.QuestionDao;
 import com.quizapp.quiz_versioning_system.common.dto.request.CreateQuestionRequest;
+import com.quizapp.quiz_versioning_system.common.dto.request.UpdateQuestionRequest;
 import com.quizapp.quiz_versioning_system.common.dto.response.QuestionResponse;
 import com.quizapp.quiz_versioning_system.common.entity.QuestionMaster;
 import com.quizapp.quiz_versioning_system.common.entity.QuestionOption;
@@ -80,6 +82,52 @@ public class QuestionServiceImpl implements QuestionService {
 
 
         
+    }
+
+    @Override
+    public QuestionResponse updateQuestion(UUID uuid, UpdateQuestionRequest request) {
+        
+    QuestionVersion latestVersion = questionDao.getLatestVersion(uuid);
+    latestVersion.setLatest(false);
+    questionDao.saveQuestionVersion(latestVersion);
+
+
+    QuestionVersion newVersion =new QuestionVersion();
+    newVersion.setQuestionMaster(latestVersion.getQuestionMaster());
+    newVersion.setVersionNumber(latestVersion.getVersionNumber() + 1);
+    newVersion.setLatest(true);
+    newVersion.setQuestionText(request.getQuestionText());
+    newVersion.setAnswerType(request.getAnswerType());
+
+
+    List<QuestionOption> options =new ArrayList<>();
+
+    if (request.getAnswerType() != AnswerType.TEXTAREA && request.getOptions() != null) {
+
+        for (String optionText :request.getOptions()) {
+            QuestionOption option =new QuestionOption();
+            option.setOptionText(optionText);
+            option.setQuestionVersion(newVersion);
+            options.add(option);
+        }
+    }
+    newVersion.setOptions(options);
+
+    newVersion =questionDao.saveQuestionVersion(newVersion);
+
+        return QuestionResponse.builder()
+            .questionUuid(latestVersion.getQuestionMaster().getUuid())
+
+            .versionNumber(newVersion.getVersionNumber())
+
+            .questionText(newVersion.getQuestionText())
+
+            .answerType(newVersion.getAnswerType())
+
+            .options(options.stream()
+                            .map(QuestionOption::getOptionText)
+                            .toList())
+            .build();
     }
 
 }

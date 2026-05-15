@@ -45,7 +45,7 @@ public class QuestionDaoImpl
     @Override
     public QuestionVersion getLatestVersion(UUID uuid) {
 
-        return questionVersionRepository.findByQuestionMasterUuidAndLatestTrue(uuid)
+        return questionVersionRepository.findByQuestionMaster_UuidAndLatestTrue(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Latest question version not found"));
     }
