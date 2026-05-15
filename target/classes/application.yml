@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/quiz_db
+    username: chetan
+    password: root@123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: sfdsaxwer2gsdbygsdfgsygf634t63453wdfsgfhvabdsfvsa
+  expiration: 86400000
+
+server:
+  port: 8080

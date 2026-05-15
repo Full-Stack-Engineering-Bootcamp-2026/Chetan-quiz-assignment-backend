@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/quiz_app
-    username: postgres
-    password: root
+    url: jdbc:postgresql://localhost:5433/quiz_db
+    username: chetan
+    password: root@123
 
   jpa:
     hibernate:
