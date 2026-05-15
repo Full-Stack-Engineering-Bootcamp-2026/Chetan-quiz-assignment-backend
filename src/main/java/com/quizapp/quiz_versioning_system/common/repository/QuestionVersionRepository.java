@@ -13,6 +13,7 @@ public interface QuestionVersionRepository
 
     Optional<QuestionVersion> findByQuestionMaster_UuidAndLatestTrue(UUID uuid);
 
-    List<QuestionVersion> findByQuestionMasterUuidOrderByVersionNumberDesc(UUID uuid);
+    List<QuestionVersion> findByQuestionMaster_UuidOrderByVersionNumberDesc(UUID uuid);
 
+    List<QuestionVersion> findByLatestTrue();
 }

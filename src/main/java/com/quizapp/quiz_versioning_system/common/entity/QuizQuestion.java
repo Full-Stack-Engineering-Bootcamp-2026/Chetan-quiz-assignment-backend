@@ -22,4 +22,5 @@ public class QuizQuestion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_version_id")
     private QuestionVersion questionVersion;
+    
 }

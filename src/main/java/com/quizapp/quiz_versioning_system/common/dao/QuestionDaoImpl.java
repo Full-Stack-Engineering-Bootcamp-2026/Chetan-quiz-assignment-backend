@@ -54,6 +54,20 @@ public class QuestionDaoImpl
     public List<QuestionVersion> getAllVersions(UUID uuid) {
 
         return questionVersionRepository
-                .findByQuestionMasterUuidOrderByVersionNumberDesc(uuid);
+                .findByQuestionMaster_UuidOrderByVersionNumberDesc(uuid);
+    }
+
+    @Override
+    public List<QuestionVersion> getAllLatestQuestions() {
+
+        return questionVersionRepository.findByLatestTrue();
+    }
+
+    @Override
+    public QuestionVersion getLatestQuestionByUuid(UUID uuid) {
+
+        return questionVersionRepository
+                .findByQuestionMaster_UuidAndLatestTrue(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Question not found"));
     }
 }

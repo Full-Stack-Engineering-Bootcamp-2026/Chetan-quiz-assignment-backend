@@ -22,4 +22,9 @@ public interface QuestionDao {
 
     List<QuestionVersion> getAllVersions(
             UUID uuid);
+
+    List<QuestionVersion> getAllLatestQuestions();
+
+    QuestionVersion getLatestQuestionByUuid(
+        UUID uuid);
 }
