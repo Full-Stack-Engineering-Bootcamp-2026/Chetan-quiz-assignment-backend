@@ -2,6 +2,8 @@ package com.quizapp.quiz_versioning_system.common.entity;
 
 import java.util.UUID;
 
+import com.quizapp.quiz_versioning_system.common.enums.Role;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

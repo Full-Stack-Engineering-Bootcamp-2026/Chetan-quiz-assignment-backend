@@ -5,12 +5,17 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.quizapp.quiz_versioning_system.common.enums.AnswerType;
+
 import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 public class QuestionVersion {
 
     @Id

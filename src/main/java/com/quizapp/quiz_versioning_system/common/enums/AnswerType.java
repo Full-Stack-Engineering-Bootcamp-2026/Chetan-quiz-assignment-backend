@@ -1,4 +1,4 @@
-package com.quizapp.quiz_versioning_system.common.entity;
+package com.quizapp.quiz_versioning_system.common.enums;
 
 public enum AnswerType {
     RADIO,
