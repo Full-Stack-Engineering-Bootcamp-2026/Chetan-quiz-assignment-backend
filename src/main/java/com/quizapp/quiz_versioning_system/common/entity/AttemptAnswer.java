@@ -32,9 +32,9 @@ public class AttemptAnswer {
     @JoinColumn(name = "question_version_id")
     private QuestionVersion questionVersion;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String questionSnapshot;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String submittedAnswer;
 }

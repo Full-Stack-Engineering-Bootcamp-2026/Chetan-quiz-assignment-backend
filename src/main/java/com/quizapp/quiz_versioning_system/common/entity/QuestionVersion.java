@@ -26,7 +26,7 @@ public class QuestionVersion {
 
     private Boolean latest = true;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String questionText;
 
     @Enumerated(EnumType.STRING)
