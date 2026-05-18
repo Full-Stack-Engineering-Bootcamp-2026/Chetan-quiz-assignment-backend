@@ -2,6 +2,7 @@ package com.quizapp.quiz_versioning_system.common.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,8 @@ import com.quizapp.quiz_versioning_system.common.dao.QuestionDao;
 import com.quizapp.quiz_versioning_system.common.dao.QuizDao;
 import com.quizapp.quiz_versioning_system.common.dto.request.SubmitAnswerRequest;
 import com.quizapp.quiz_versioning_system.common.dto.request.SubmitQuizRequest;
+import com.quizapp.quiz_versioning_system.common.dto.response.AttemptAnswerResponse;
+import com.quizapp.quiz_versioning_system.common.dto.response.AttemptDetailResponse;
 import com.quizapp.quiz_versioning_system.common.dto.response.QuizAttemptResponse;
 import com.quizapp.quiz_versioning_system.common.entity.AttemptAnswer;
 import com.quizapp.quiz_versioning_system.common.entity.QuestionVersion;
@@ -60,9 +63,9 @@ public class AttemptServiceImpl implements AttemptService {
 
         for (SubmitAnswerRequest answerRequest : request.getAnswers()) {
 
-            QuestionVersion questionVersion = quiz.getQuizQuestions().stream().filter(quizQuestion ->
-                    quizQuestion.getQuestionVersion().getQuestionMaster().getUuid()
-                    .equals(answerRequest.getQuestionUuid()))
+            QuestionVersion questionVersion = quiz.getQuizQuestions().stream()
+                    .filter(quizQuestion -> quizQuestion.getQuestionVersion().getQuestionMaster().getUuid()
+                            .equals(answerRequest.getQuestionUuid()))
                     .map(quizQuestion -> quizQuestion.getQuestionVersion())
                     .findFirst().orElseThrow(() -> new RuntimeException("Question not found in quiz"));
 
@@ -91,5 +94,74 @@ public class AttemptServiceImpl implements AttemptService {
                 .submittedAt(quizAttempt.getSubmittedAt())
                 .message("Quiz submitted successfully")
                 .build();
+    }
+
+    @Override
+    public List<AttemptDetailResponse> getMyAttempts() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        List<QuizAttempt> attempts = attemptDao.getUserAttempts(email);
+
+        return attempts.stream().map(attempt -> AttemptDetailResponse.builder()
+                .attemptUuid(attempt.getUuid())
+                .quizUuid(attempt.getQuiz().getUuid())
+                .quizTitle(attempt.getQuiz().getTitle())
+                .submittedAt(attempt.getSubmittedAt())
+                .answers(attempt.getAnswers().stream().map(answer -> {
+                    try {
+                        List<String> submittedAnswers = Arrays.asList(
+
+                                objectMapper.readValue(
+                                        answer.getSubmittedAnswer(),
+                                        String[].class));
+                        return AttemptAnswerResponse.builder()
+                                .questionUuid(answer.getQuestionVersion().getQuestionMaster().getUuid())
+                                .versionNumber(answer.getQuestionVersion().getVersionNumber())
+                                .questionText(answer.getQuestionSnapshot())
+                                .answerType(answer.getQuestionVersion().getAnswerType())
+                                .options(answer.getQuestionVersion().getOptions().stream()
+                                        .map(option -> option.getOptionText()).toList())
+                                .submittedAnswers(submittedAnswers)
+                                .build();
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to deserialize answers");
+                    }
+                }).toList())
+                .build())
+                .toList();
+    }
+
+    @Override
+    public List<AttemptDetailResponse> getAllAttempts() {
+        List<QuizAttempt> attempts = attemptDao.getAllAttempts();
+
+        return attempts.stream()
+                .map(attempt -> AttemptDetailResponse.builder()
+                        .attemptUuid(attempt.getUuid())
+                        .quizUuid(attempt.getQuiz().getUuid())
+                        .quizTitle(attempt.getQuiz().getTitle())
+                        .submittedAt(attempt.getSubmittedAt())
+                        .userName(attempt.getUser().getName())
+                        .userEmail(attempt.getUser().getEmail())
+                        .answers(attempt.getAnswers().stream().map(answer -> {
+                        try {
+                            List<String> submittedAnswers = Arrays.asList(objectMapper.readValue(answer.getSubmittedAnswer(),String[].class));
+
+                                return AttemptAnswerResponse.builder()
+                                        .questionUuid(answer.getQuestionVersion().getQuestionMaster().getUuid())
+                                        .versionNumber(answer.getQuestionVersion().getVersionNumber())
+                                        .questionText(answer.getQuestionSnapshot())
+                                        .answerType(answer.getQuestionVersion().getAnswerType())
+                                        .options(answer.getQuestionVersion().getOptions().stream()
+                                            .map(option -> option.getOptionText()).toList())
+                                            .submittedAnswers(submittedAnswers).build();
+                                    } catch (Exception e) {
+                                        throw new RuntimeException("Failed to deserialize answers");
+                                    }
+                                })
+                                .toList())
+                        .build())
+                .toList();
     }
 }

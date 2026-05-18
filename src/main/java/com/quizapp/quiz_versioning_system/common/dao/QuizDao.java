@@ -1,5 +1,6 @@
 package com.quizapp.quiz_versioning_system.common.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.quizapp.quiz_versioning_system.common.entity.Quiz;
@@ -11,4 +12,6 @@ public interface QuizDao {
     Quiz getQuizByUuid(UUID uuid);
 
     Quiz getQuizWithQuestions(UUID uuid);
+
+    List<Quiz> getAllActiveQuizzes();
 }

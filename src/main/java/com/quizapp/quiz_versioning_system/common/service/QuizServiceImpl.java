@@ -44,14 +44,14 @@ public class QuizServiceImpl implements QuizService {
             quizQuestion.setQuestionVersion(questionVersion);
             quizQuestions.add(quizQuestion);
 
-            QuestionResponse response =QuestionResponse.builder()
-                            .questionUuid(questionUuid)
-                            .versionNumber(questionVersion.getVersionNumber())
-                            .questionText(questionVersion.getQuestionText())
-                            .answerType(questionVersion.getAnswerType())
-                            .options(questionVersion.getOptions()
-                                            .stream().map(option -> option.getOptionText()).toList())
-                            .build();
+            QuestionResponse response = QuestionResponse.builder()
+                    .questionUuid(questionUuid)
+                    .versionNumber(questionVersion.getVersionNumber())
+                    .questionText(questionVersion.getQuestionText())
+                    .answerType(questionVersion.getAnswerType())
+                    .options(questionVersion.getOptions()
+                            .stream().map(option -> option.getOptionText()).toList())
+                    .build();
 
             responses.add(response);
         }
@@ -65,6 +65,42 @@ public class QuizServiceImpl implements QuizService {
                 .questions(responses)
                 .build();
 
+    }
+
+    @Override
+    public List<QuizResponse> getAllQuizzes() {
+
+        List<Quiz> quizzes = quizDao.getAllActiveQuizzes();
+
+        return quizzes.stream().map(quiz -> QuizResponse.builder().quizUuid(quiz.getUuid())
+                .title(quiz.getTitle()).build()).toList();
+    }
+
+    @Override
+    public QuizResponse getQuizByUuid(UUID uuid) {
+        Quiz quiz = quizDao.getQuizByUuid(uuid);
+
+        List<QuestionResponse> questions = quiz.getQuizQuestions().stream()
+                .map(quizQuestion -> {
+                    QuestionVersion qv = quizQuestion.getQuestionVersion();
+
+                    return QuestionResponse.builder()
+                            .questionUuid(qv.getQuestionMaster().getUuid())
+                            .versionNumber(qv.getVersionNumber())
+                            .questionText(qv.getQuestionText())
+                            .answerType(qv.getAnswerType())
+                            .options(qv.getOptions().stream()
+                                    .map(option -> option.getOptionText())
+                                    .toList())
+                            .build();
+                })
+                .toList();
+
+        return QuizResponse.builder()
+                .quizUuid(quiz.getUuid())
+                .title(quiz.getTitle())
+                .questions(questions)
+                .build();
     }
 
 }

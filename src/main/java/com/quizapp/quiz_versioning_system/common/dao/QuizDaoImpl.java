@@ -1,5 +1,6 @@
 package com.quizapp.quiz_versioning_system.common.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -27,7 +28,7 @@ public class QuizDaoImpl
     public Quiz getQuizByUuid(UUID uuid) {
 
         return quizRepository.findByUuid(uuid)
-                        .orElseThrow(() -> new ResourceNotFoundException("Quiz not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found"));
     }
 
     @Override
@@ -35,5 +36,11 @@ public class QuizDaoImpl
 
         return quizRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found"));
+    }
+
+    @Override
+    public List<Quiz> getAllActiveQuizzes() {
+
+        return quizRepository.findByActiveTrue();
     }
 }
