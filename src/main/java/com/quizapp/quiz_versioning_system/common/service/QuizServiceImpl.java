@@ -73,7 +73,7 @@ public class QuizServiceImpl implements QuizService {
         List<Quiz> quizzes = quizDao.getAllActiveQuizzes();
 
         return quizzes.stream().map(quiz -> QuizResponse.builder().quizUuid(quiz.getUuid())
-                .title(quiz.getTitle()).build()).toList();
+                .title(quiz.getTitle()).questionCount(quiz.getQuizQuestions().size()).build()).toList();
     }
 
     @Override
@@ -104,46 +104,49 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizResponse updateQuiz(UUID uuid, CreateQuizRequest request) {
-        Quiz quiz = quizDao.getQuizByUuid(uuid);
+public QuizResponse updateQuiz(UUID uuid, CreateQuizRequest request) {
+    Quiz quiz = quizDao.getQuizByUuid(uuid);
 
-  
-        quiz.setTitle(request.getTitle());
 
-        quiz.getQuizQuestions().clear();
+    quiz.setTitle(request.getTitle());
 
-        List<QuizQuestion> quizQuestions = new ArrayList<>();
-        List<QuestionResponse> responses = new ArrayList<>();
 
-        for (UUID questionUuid : request.getQuestionUuids()) {
-            QuestionVersion questionVersion = questionDao.getLatestVersion(questionUuid);
+    List<QuizQuestion> existingQuestions = quiz.getQuizQuestions();
 
-            QuizQuestion quizQuestion = new QuizQuestion();
-            quizQuestion.setQuiz(quiz);
-            quizQuestion.setQuestionVersion(questionVersion);
-            quizQuestions.add(quizQuestion);
+    existingQuestions.clear();
 
-            QuestionResponse response = QuestionResponse.builder()
-                    .questionUuid(questionUuid)
-                    .versionNumber(questionVersion.getVersionNumber())
-                    .questionText(questionVersion.getQuestionText())
-                    .answerType(questionVersion.getAnswerType())
-                    .options(questionVersion.getOptions().stream()
-                            .map(option -> option.getOptionText())
-                            .toList())
-                    .build();
+    List<QuestionResponse> responses = new ArrayList<>();
 
-            responses.add(response);
-        }
 
-        quiz.setQuizQuestions(quizQuestions);
-        quiz = quizDao.saveQuiz(quiz);
+    for (UUID questionUuid : request.getQuestionUuids()) {
+        QuestionVersion questionVersion = questionDao.getLatestVersion(questionUuid);
 
-        return QuizResponse.builder()
-                .quizUuid(quiz.getUuid())
-                .title(quiz.getTitle())
-                .questions(responses)
+        QuizQuestion quizQuestion = new QuizQuestion();
+        quizQuestion.setQuiz(quiz);
+        quizQuestion.setQuestionVersion(questionVersion);
+
+        existingQuestions.add(quizQuestion);
+
+        QuestionResponse response = QuestionResponse.builder()
+                .questionUuid(questionUuid)
+                .versionNumber(questionVersion.getVersionNumber())
+                .questionText(questionVersion.getQuestionText())
+                .answerType(questionVersion.getAnswerType())
+                .options(questionVersion.getOptions().stream()
+                        .map(option -> option.getOptionText())
+                        .toList())
                 .build();
+
+        responses.add(response);
     }
+
+    quiz = quizDao.saveQuiz(quiz);
+
+    return QuizResponse.builder()
+            .quizUuid(quiz.getUuid())
+            .title(quiz.getTitle())
+            .questions(responses)
+            .build();
+}
 
 }

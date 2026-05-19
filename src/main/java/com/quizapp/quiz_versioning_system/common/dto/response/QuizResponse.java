@@ -17,4 +17,6 @@ public class QuizResponse {
     private String title;
 
     private List<QuestionResponse> questions;
+
+    private Integer questionCount;
 }
