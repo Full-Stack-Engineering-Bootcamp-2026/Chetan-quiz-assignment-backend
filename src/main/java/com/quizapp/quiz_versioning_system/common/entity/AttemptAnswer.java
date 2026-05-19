@@ -37,4 +37,5 @@ public class AttemptAnswer {
 
     @Column(columnDefinition = "TEXT")
     private String submittedAnswer;
+    
 }

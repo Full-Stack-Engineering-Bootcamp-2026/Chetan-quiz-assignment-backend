@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,17 +36,25 @@ public class QuizController {
 
     }
 
-    @GetMapping("/user/quizzes")
+    @GetMapping
     public ResponseEntity<List<QuizResponse>> getAllQuizzes() {
 
-        return ResponseEntity.ok(quizService.getAllQuizzes());
+        return ResponseEntity.ok(
+                quizService.getAllQuizzes());
     }
 
-    @GetMapping("/user/quizzes/{uuid}")
-    public ResponseEntity<QuizResponse> getQuizByUuid(
+    @GetMapping("/{uuid}")
+    public ResponseEntity<QuizResponse> getQuizByUuid(@PathVariable UUID uuid) {
 
-            @PathVariable UUID uuid) {
-
-        return ResponseEntity.ok(quizService.getQuizByUuid(uuid));
+        return ResponseEntity.ok(
+                quizService.getQuizByUuid(uuid));
     }
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<QuizResponse> updateQuiz(@PathVariable UUID uuid, @Valid @RequestBody CreateQuizRequest request) {
+
+        return ResponseEntity.ok(quizService.updateQuiz( uuid, request));
+        
+    }
+
 }

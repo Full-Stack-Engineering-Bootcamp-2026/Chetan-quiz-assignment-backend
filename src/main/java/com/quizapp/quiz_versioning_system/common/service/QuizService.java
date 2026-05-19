@@ -12,6 +12,8 @@ public interface QuizService {
 
     List<QuizResponse> getAllQuizzes();
 
-    QuizResponse getQuizByUuid( UUID uuid);
+    QuizResponse getQuizByUuid(UUID uuid);
+
+    QuizResponse updateQuiz(UUID uuid,CreateQuizRequest request);
 
 }

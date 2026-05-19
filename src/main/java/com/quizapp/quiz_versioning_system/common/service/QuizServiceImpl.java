@@ -103,4 +103,47 @@ public class QuizServiceImpl implements QuizService {
                 .build();
     }
 
+    @Override
+    public QuizResponse updateQuiz(UUID uuid, CreateQuizRequest request) {
+        Quiz quiz = quizDao.getQuizByUuid(uuid);
+
+  
+        quiz.setTitle(request.getTitle());
+
+        quiz.getQuizQuestions().clear();
+
+        List<QuizQuestion> quizQuestions = new ArrayList<>();
+        List<QuestionResponse> responses = new ArrayList<>();
+
+        for (UUID questionUuid : request.getQuestionUuids()) {
+            QuestionVersion questionVersion = questionDao.getLatestVersion(questionUuid);
+
+            QuizQuestion quizQuestion = new QuizQuestion();
+            quizQuestion.setQuiz(quiz);
+            quizQuestion.setQuestionVersion(questionVersion);
+            quizQuestions.add(quizQuestion);
+
+            QuestionResponse response = QuestionResponse.builder()
+                    .questionUuid(questionUuid)
+                    .versionNumber(questionVersion.getVersionNumber())
+                    .questionText(questionVersion.getQuestionText())
+                    .answerType(questionVersion.getAnswerType())
+                    .options(questionVersion.getOptions().stream()
+                            .map(option -> option.getOptionText())
+                            .toList())
+                    .build();
+
+            responses.add(response);
+        }
+
+        quiz.setQuizQuestions(quizQuestions);
+        quiz = quizDao.saveQuiz(quiz);
+
+        return QuizResponse.builder()
+                .quizUuid(quiz.getUuid())
+                .title(quiz.getTitle())
+                .questions(responses)
+                .build();
+    }
+
 }
