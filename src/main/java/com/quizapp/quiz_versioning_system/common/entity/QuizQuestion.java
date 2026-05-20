@@ -19,8 +19,8 @@ public class QuizQuestion {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_version_id")
-    private QuestionVersion questionVersion;
-    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private QuestionMaster questionMaster;
+
 }

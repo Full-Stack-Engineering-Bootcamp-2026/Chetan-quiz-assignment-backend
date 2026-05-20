@@ -27,7 +27,7 @@ import com.quizapp.quiz_versioning_system.common.entity.User;
 import com.quizapp.quiz_versioning_system.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -62,12 +62,12 @@ public class AttemptServiceImpl implements AttemptService {
         List<AttemptAnswer> attemptAnswers = new ArrayList<>();
 
         for (SubmitAnswerRequest answerRequest : request.getAnswers()) {
-
             QuestionVersion questionVersion = quiz.getQuizQuestions().stream()
-                    .filter(quizQuestion -> quizQuestion.getQuestionVersion().getQuestionMaster().getUuid()
+                    .filter(quizQuestion -> quizQuestion.getQuestionMaster().getUuid()
                             .equals(answerRequest.getQuestionUuid()))
-                    .map(quizQuestion -> quizQuestion.getQuestionVersion())
-                    .findFirst().orElseThrow(() -> new RuntimeException("Question not found in quiz"));
+                    .map(quizQuestion -> questionDao.getLatestVersion(quizQuestion.getQuestionMaster().getUuid()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Question not found in quiz"));
 
             AttemptAnswer attemptAnswer = new AttemptAnswer();
             attemptAnswer.setQuizAttempt(quizAttempt);
@@ -145,8 +145,9 @@ public class AttemptServiceImpl implements AttemptService {
                         .userName(attempt.getUser().getName())
                         .userEmail(attempt.getUser().getEmail())
                         .answers(attempt.getAnswers().stream().map(answer -> {
-                        try {
-                            List<String> submittedAnswers = Arrays.asList(objectMapper.readValue(answer.getSubmittedAnswer(),String[].class));
+                            try {
+                                List<String> submittedAnswers = Arrays
+                                        .asList(objectMapper.readValue(answer.getSubmittedAnswer(), String[].class));
 
                                 return AttemptAnswerResponse.builder()
                                         .questionUuid(answer.getQuestionVersion().getQuestionMaster().getUuid())
@@ -154,12 +155,12 @@ public class AttemptServiceImpl implements AttemptService {
                                         .questionText(answer.getQuestionSnapshot())
                                         .answerType(answer.getQuestionVersion().getAnswerType())
                                         .options(answer.getQuestionVersion().getOptions().stream()
-                                            .map(option -> option.getOptionText()).toList())
-                                            .submittedAnswers(submittedAnswers).build();
-                                    } catch (Exception e) {
-                                        throw new RuntimeException("Failed to deserialize answers");
-                                    }
-                                })
+                                                .map(option -> option.getOptionText()).toList())
+                                        .submittedAnswers(submittedAnswers).build();
+                            } catch (Exception e) {
+                                throw new RuntimeException("Failed to deserialize answers");
+                            }
+                        })
                                 .toList())
                         .build())
                 .toList();

@@ -12,6 +12,7 @@ import com.quizapp.quiz_versioning_system.common.dao.QuizDao;
 import com.quizapp.quiz_versioning_system.common.dto.request.CreateQuizRequest;
 import com.quizapp.quiz_versioning_system.common.dto.response.QuestionResponse;
 import com.quizapp.quiz_versioning_system.common.dto.response.QuizResponse;
+import com.quizapp.quiz_versioning_system.common.entity.QuestionMaster;
 import com.quizapp.quiz_versioning_system.common.entity.QuestionVersion;
 import com.quizapp.quiz_versioning_system.common.entity.Quiz;
 import com.quizapp.quiz_versioning_system.common.entity.QuizQuestion;
@@ -39,9 +40,12 @@ public class QuizServiceImpl implements QuizService {
         for (UUID questionUuid : request.getQuestionUuids()) {
 
             QuestionVersion questionVersion = questionDao.getLatestVersion(questionUuid);
+            QuestionMaster questionMaster = questionDao.getQuestionMasterByUuid(
+                    questionUuid);
             QuizQuestion quizQuestion = new QuizQuestion();
             quizQuestion.setQuiz(quiz);
-            quizQuestion.setQuestionVersion(questionVersion);
+            quizQuestion.setQuestionMaster(
+                    questionMaster);
             quizQuestions.add(quizQuestion);
 
             QuestionResponse response = QuestionResponse.builder()
@@ -82,7 +86,8 @@ public class QuizServiceImpl implements QuizService {
 
         List<QuestionResponse> questions = quiz.getQuizQuestions().stream()
                 .map(quizQuestion -> {
-                    QuestionVersion qv = quizQuestion.getQuestionVersion();
+                    QuestionVersion qv = questionDao.getLatestVersion(
+                            quizQuestion.getQuestionMaster().getUuid());
 
                     return QuestionResponse.builder()
                             .questionUuid(qv.getQuestionMaster().getUuid())
@@ -102,37 +107,33 @@ public class QuizServiceImpl implements QuizService {
                 .questions(questions)
                 .build();
     }
-
-    @Override
+@Override
 public QuizResponse updateQuiz(UUID uuid, CreateQuizRequest request) {
     Quiz quiz = quizDao.getQuizByUuid(uuid);
 
-
     quiz.setTitle(request.getTitle());
 
-
     List<QuizQuestion> existingQuestions = quiz.getQuizQuestions();
-
     existingQuestions.clear();
 
     List<QuestionResponse> responses = new ArrayList<>();
 
-
     for (UUID questionUuid : request.getQuestionUuids()) {
-        QuestionVersion questionVersion = questionDao.getLatestVersion(questionUuid);
+        QuestionMaster questionMaster = questionDao.getQuestionMasterByUuid(questionUuid);
+        QuestionVersion latestVersion = questionDao.getLatestVersion(questionUuid);
 
         QuizQuestion quizQuestion = new QuizQuestion();
         quizQuestion.setQuiz(quiz);
-        quizQuestion.setQuestionVersion(questionVersion);
+        quizQuestion.setQuestionMaster(questionMaster);
 
         existingQuestions.add(quizQuestion);
 
         QuestionResponse response = QuestionResponse.builder()
                 .questionUuid(questionUuid)
-                .versionNumber(questionVersion.getVersionNumber())
-                .questionText(questionVersion.getQuestionText())
-                .answerType(questionVersion.getAnswerType())
-                .options(questionVersion.getOptions().stream()
+                .versionNumber(latestVersion.getVersionNumber())
+                .questionText(latestVersion.getQuestionText())
+                .answerType(latestVersion.getAnswerType())
+                .options(latestVersion.getOptions().stream()
                         .map(option -> option.getOptionText())
                         .toList())
                 .build();
@@ -148,5 +149,4 @@ public QuizResponse updateQuiz(UUID uuid, CreateQuizRequest request) {
             .questions(responses)
             .build();
 }
-
 }
