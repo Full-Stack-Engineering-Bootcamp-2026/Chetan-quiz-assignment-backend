@@ -24,52 +24,51 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtFilter;
+        private final JwtAuthenticationFilter jwtFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http)
-            throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                        HttpSecurity http)
+                        throws Exception {
 
-        http    
-                .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
+                http
+                                .cors(Customizer.withDefaults())
+                                .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                                .sessionManagement(session -> session.sessionCreationPolicy(
+                                                SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
+                                .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/auth/**")
-                        .permitAll()
+                                                .requestMatchers("/auth/**")
+                                                .permitAll()
 
-                        .requestMatchers("/admin/**")
-                        .hasRole("ADMIN")
+                                                .requestMatchers("/admin/**")
+                                                .hasRole("ADMIN")
 
-                        .requestMatchers("/user/**")
-                        .hasAnyRole("USER", "ADMIN")
+                                                .requestMatchers("/user/**")
+                                                .hasAnyRole("USER", "ADMIN")
 
-                        .anyRequest()
-                        .authenticated())
+                                                .anyRequest()
+                                                .authenticated())
 
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                                .addFilterBefore(
+                                                jwtFilter,
+                                                UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config)
-            throws Exception {
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration config)
+                        throws Exception {
 
-        return config.getAuthenticationManager();
-    }
+                return config.getAuthenticationManager();
+        }
 }

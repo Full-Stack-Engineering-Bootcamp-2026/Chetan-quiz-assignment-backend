@@ -17,6 +17,7 @@
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/LoginRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/CreateQuestionRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/CreateQuizRequest.java
+/home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/RegisterRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/SubmitAnswerRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/SubmitQuizRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/UpdateQuestionRequest.java
@@ -26,6 +27,7 @@
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/response/QuestionSnapshotResponse.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/response/QuizAttemptResponse.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/response/QuizResponse.java
+/home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/response/RegisterResponse.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/entity/AttemptAnswer.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/entity/QuestionMaster.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/entity/QuestionOption.java
