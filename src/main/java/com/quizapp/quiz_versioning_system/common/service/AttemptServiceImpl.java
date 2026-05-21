@@ -18,12 +18,14 @@ import com.quizapp.quiz_versioning_system.common.dto.request.SubmitAnswerRequest
 import com.quizapp.quiz_versioning_system.common.dto.request.SubmitQuizRequest;
 import com.quizapp.quiz_versioning_system.common.dto.response.AttemptAnswerResponse;
 import com.quizapp.quiz_versioning_system.common.dto.response.AttemptDetailResponse;
+import com.quizapp.quiz_versioning_system.common.dto.response.QuestionSnapshotResponse;
 import com.quizapp.quiz_versioning_system.common.dto.response.QuizAttemptResponse;
 import com.quizapp.quiz_versioning_system.common.entity.AttemptAnswer;
 import com.quizapp.quiz_versioning_system.common.entity.QuestionVersion;
 import com.quizapp.quiz_versioning_system.common.entity.Quiz;
 import com.quizapp.quiz_versioning_system.common.entity.QuizAttempt;
 import com.quizapp.quiz_versioning_system.common.entity.User;
+import com.quizapp.quiz_versioning_system.common.enums.AnswerType;
 import com.quizapp.quiz_versioning_system.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -72,8 +74,21 @@ public class AttemptServiceImpl implements AttemptService {
             AttemptAnswer attemptAnswer = new AttemptAnswer();
             attemptAnswer.setQuizAttempt(quizAttempt);
             attemptAnswer.setQuestionVersion(questionVersion);
-            String snapshot = questionVersion.getQuestionText();
-            attemptAnswer.setQuestionSnapshot(snapshot);
+            QuestionSnapshotResponse snapshotshot = QuestionSnapshotResponse.builder()
+                    .questionText(questionVersion.getQuestionText())
+                    .answerType(questionVersion.getAnswerType().name())
+                    .versionNumber(questionVersion.getVersionNumber())
+                    .options(questionVersion.getOptions().stream()
+                            .map(option -> option.getOptionText())
+                            .toList())
+                    .build();
+            String snapshotJson;
+            try {
+                snapshotJson = objectMapper.writeValueAsString(snapshotshot);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to serialize snapshot");
+            }
+            attemptAnswer.setQuestionSnapshot(snapshotJson);
 
             try {
 
@@ -115,13 +130,16 @@ public class AttemptServiceImpl implements AttemptService {
                                 objectMapper.readValue(
                                         answer.getSubmittedAnswer(),
                                         String[].class));
+                        QuestionSnapshotResponse snapshot = objectMapper.readValue(
+                                answer.getQuestionSnapshot(),
+                                QuestionSnapshotResponse.class);
+
                         return AttemptAnswerResponse.builder()
                                 .questionUuid(answer.getQuestionVersion().getQuestionMaster().getUuid())
-                                .versionNumber(answer.getQuestionVersion().getVersionNumber())
-                                .questionText(answer.getQuestionSnapshot())
-                                .answerType(answer.getQuestionVersion().getAnswerType())
-                                .options(answer.getQuestionVersion().getOptions().stream()
-                                        .map(option -> option.getOptionText()).toList())
+                                .versionNumber(snapshot.getVersionNumber())
+                                .questionText(snapshot.getQuestionText())
+                                .answerType(AnswerType.valueOf(snapshot.getAnswerType()))
+                                .options(snapshot.getOptions())
                                 .submittedAnswers(submittedAnswers)
                                 .build();
                     } catch (Exception e) {
@@ -149,16 +167,22 @@ public class AttemptServiceImpl implements AttemptService {
                                 List<String> submittedAnswers = Arrays
                                         .asList(objectMapper.readValue(answer.getSubmittedAnswer(), String[].class));
 
+                                QuestionSnapshotResponse snapshot = objectMapper.readValue(
+                                        answer.getQuestionSnapshot(),
+                                        QuestionSnapshotResponse.class);
+
                                 return AttemptAnswerResponse.builder()
                                         .questionUuid(answer.getQuestionVersion().getQuestionMaster().getUuid())
-                                        .versionNumber(answer.getQuestionVersion().getVersionNumber())
-                                        .questionText(answer.getQuestionSnapshot())
-                                        .answerType(answer.getQuestionVersion().getAnswerType())
-                                        .options(answer.getQuestionVersion().getOptions().stream()
-                                                .map(option -> option.getOptionText()).toList())
-                                        .submittedAnswers(submittedAnswers).build();
+                                        .versionNumber(snapshot.getVersionNumber())
+                                        .questionText(snapshot.getQuestionText())
+                                        .answerType(AnswerType.valueOf(snapshot.getAnswerType()))
+                                        .options(snapshot.getOptions())
+                                        .submittedAnswers(submittedAnswers)
+                                        .build();
                             } catch (Exception e) {
-                                throw new RuntimeException("Failed to deserialize answers");
+                                e.printStackTrace();
+                                throw new RuntimeException(
+                                        e.getMessage());
                             }
                         })
                                 .toList())
