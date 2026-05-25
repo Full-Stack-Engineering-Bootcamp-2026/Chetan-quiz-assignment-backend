@@ -20,3 +20,11 @@ jwt:
 
 server:
   port: 8080
+
+cloud:
+  s3:
+    bucket: Chetan-Bucket
+    endpoint: https://s3.us-east-005.backblazeb2.com
+    access-key: 005343905bf577c0000000001
+    secret-key: K005h4CEp0XNVk2DPGuJQpvdMnjmZn0
+    region: us-east-005

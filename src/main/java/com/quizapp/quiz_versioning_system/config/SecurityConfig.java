@@ -40,6 +40,11 @@ public class SecurityConfig {
 
                                 .authorizeHttpRequests(auth -> auth
 
+
+                                                .requestMatchers("/api/storage/**")
+                                                .permitAll()
+                                                
+
                                                 .requestMatchers("/auth/**")
                                                 .permitAll()
 
@@ -48,6 +53,8 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/user/**")
                                                 .hasAnyRole("USER", "ADMIN")
+
+                                                
 
                                                 .anyRequest()
                                                 .authenticated())
