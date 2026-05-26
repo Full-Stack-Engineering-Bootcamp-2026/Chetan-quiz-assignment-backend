@@ -1,0 +1,39 @@
+type Query {
+
+    quizzes: [QuizResponse]
+
+    quizByUuid(uuid: String!): QuizResponse
+}
+
+type QuizResponse {
+
+    quizUuid: String
+
+    title: String
+
+    questionCount: Int
+
+    questions: [QuestionResponse]
+}
+
+type QuestionResponse {
+
+    questionUuid: String
+
+    versionNumber: Int
+
+    questionText: String
+
+    answerType: String
+
+    options: [String]
+}
+
+type Mutation {
+
+    createQuiz(
+        title: String!
+
+        questionUuids: [String!]!
+    ): QuizResponse
+}

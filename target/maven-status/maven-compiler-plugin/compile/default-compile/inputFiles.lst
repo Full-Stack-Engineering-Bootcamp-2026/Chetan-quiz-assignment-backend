@@ -5,6 +5,7 @@
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/AuthController.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/QuestionController.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/QuizController.java
+/home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/QuizGraphQLController.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/StorageController.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/TestController.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/controller/UserController.java
@@ -18,6 +19,7 @@
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/AuthResponse.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/LoginRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/CreateQuestionRequest.java
+/home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/CreateQuizGraphQLRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/CreateQuizRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/RegisterRequest.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/common/dto/request/SubmitAnswerRequest.java
