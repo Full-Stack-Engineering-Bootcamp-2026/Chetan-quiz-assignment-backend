@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,9 +82,12 @@ public class QuizServiceImpl implements QuizService {
                 .title(quiz.getTitle()).questionCount(quiz.getQuizQuestions().size()).build()).toList();
     }
 
+    @Cacheable(value = "quizzes",key = "#uuid")
     @Override
     public QuizResponse getQuizByUuid(UUID uuid) {
         Quiz quiz = quizDao.getQuizByUuid(uuid);
+
+        System.out.println("FETCHING QUIZ FROM DB");
 
         List<QuestionResponse> questions = quiz.getQuizQuestions().stream()
                 .map(quizQuestion -> {
@@ -107,9 +112,16 @@ public class QuizServiceImpl implements QuizService {
                 .questions(questions)
                 .build();
     }
+
+@CacheEvict(
+        value = "quizzes",
+        key = "#uuid"
+)
 @Override
 public QuizResponse updateQuiz(UUID uuid, CreateQuizRequest request) {
     Quiz quiz = quizDao.getQuizByUuid(uuid);
+
+    System.out.println("Evicting cache...");
 
     quiz.setTitle(request.getTitle());
 

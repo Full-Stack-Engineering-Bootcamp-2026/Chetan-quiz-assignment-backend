@@ -6,12 +6,16 @@ import java.util.UUID;
 
 import com.quizapp.quiz_versioning_system.common.enums.AnswerType;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class QuestionResponse {
 

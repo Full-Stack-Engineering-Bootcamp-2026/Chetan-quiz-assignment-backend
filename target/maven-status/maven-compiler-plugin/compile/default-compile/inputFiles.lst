@@ -71,6 +71,7 @@
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/config/AppConfig.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/config/BackblazeConfig.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/config/CorsConfig.java
+/home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/config/RedisConfig.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/config/SecurityConfig.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/security/jwt/JwtAuthenticationFilter.java
 /home/chetan.asane@ad.mindbowser.com/Java/Quiz-Aiiginment-backend/src/main/java/com/quizapp/quiz_versioning_system/security/jwt/JwtConfig.java
